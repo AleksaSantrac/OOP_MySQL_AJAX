@@ -15,9 +15,17 @@
 
         $res = review::getAll($conn);
 
+        $results = array();
+
         while($data = $res->fetch_assoc()){
-            echo json_encode($data['id']."|".$data['title']."|".$data['content']."|".$data['grade']."|".$data['username']."|");
+            $id = $data['id'];
+            $title = $data['title'];
+            $content = $data['content'];
+            $grade = $data['grade'];
+            $results[] = array('id' => $id, 'title' => $title, 'content' => $content, 'grade' => $grade);
         }
+
+        echo json_encode($results);
 
         
     } catch(Exception $e){

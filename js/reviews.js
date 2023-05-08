@@ -18,71 +18,12 @@ function createReview(){
      });
 }
 
-function deleteReview(id){
-    $.ajax({
-        url: 'handler/deleteReview.php',
-        type: 'delete',
-        data: { 
-            "id": id
-        },
-        success: function(response){
-            alert("Sacuvano" + response);
-        },
-        error: function(xhr){
-            alert("GRESKA" + xhr);
-        }
-     });
-}
-
-function getReviewGrade(id){
-    let grade = 0;
-    $.ajax({
-        url: 'handler/getReview.php',
-        type: 'get',
-        data: { 
-            // "userID": localStorage.getItem("id"),
-            // "userID": $_COOKIE
-            "id": id
-        },
-        success: function(response){
-            if(response == "") {
-                console.log(localStorage.getItem("id")+"aa");
-                return 'a';
-            }
-            console.log(localStorage.getItem("id")+"fd")
-            let j=0;
-            let arr = [];
-            arr=response.split("\"\"");
-            for(let k = 0;k<arr.length;k++ ){
-                arr[k]=arr[k].replaceAll('\"', '');
-            }
-            html = "";
-            for (let i = 0; i < arr.length; i++) {
-                let id = arr[i].split("|")[0];
-                let u = arr[i].split("|")[1];
-                let p = arr[i].split("|")[2];
-                let q = arr[i].split("|")[3];
-                console.log(q);
-                grade = q+1;
-                // insertRow(id, u);
-            }
-            
-        },
-        error: function(xhr){
-            alert("GRESKA" + xhr.status);
-        }
-     });
-     return grade;
-}
-
 function like(id){
     $.ajax({
         url: 'handler/updateReview.php',
         type: 'put',
         data: { 
             "id": id
-            // "id": 6,
-            // "grade": 4
         },
         success: function(response){
             alert("Saved: " + response);
@@ -98,8 +39,7 @@ window.onload = function getAll(){
         url: 'handler/getAll.php',
         type: 'get',
         data: { 
-            // "userID": localStorage.getItem("id"),
-            // "userID": $_COOKIE
+
         },
         success: function(response){
             if(response == "") {
@@ -107,60 +47,14 @@ window.onload = function getAll(){
                 return 'a';
             }
             console.log(localStorage.getItem("id")+"fd")
-            let j=0;
-            let arr = [];
-            arr=response.split("\"\"");
-            for(let k = 0;k<arr.length;k++ ){
-                arr[k]=arr[k].replaceAll('\"', '');
-            }
-            html = "";
-            for (let i = 0; i < arr.length; i++) {
-                let id = arr[i].split("|")[0];
-                let u = arr[i].split("|")[1];
-                let p = arr[i].split("|")[2];
-                let q = arr[i].split("|")[3];
-                console.log(id + u + p);
-                insertPostContainer(id, u, p, q)
-            }
-            
-        },
-        error: function(xhr){
-            alert("GRESKA" + xhr.status);
-        }
-     });
-}
-
-function insertReview(){
-
-}
-
-function getById(){
-    $.ajax({
-        url: 'handler/getById.php',
-        type: 'get',
-        data: { 
-            // "userID": localStorage.getItem("id"),
-            // "userID": $_COOKIE
-        },
-        success: function(response){
-            if(response == "") {
-                console.log(localStorage.getItem("id")+"aa");
-                return 'a';
-            }
-            console.log(localStorage.getItem("id")+"fd")
-            let j=0;
-            let arr = [];
-            arr=response.split("\"\"");
-            for(let k = 0;k<arr.length;k++ ){
-                arr[k]=arr[k].replaceAll('\"', '');
-            }
-            html = "";
-            for (let i = 0; i < arr.length; i++) {
-                let id = arr[i].split("|")[0];
-                let u = arr[i].split("|")[1];
-                let p = arr[i].split("|")[2];
-                console.log(id + u + p);
-                // insertRow(id, u);
+            const data = JSON.parse(response);
+            for (let i = 0; i < data.length; i++) {
+                const id = data[i].id;
+                const title = data[i].title;
+                const content = data[i].content;
+                const grade = data[i].grade;
+                console.log(id, title, content, grade);
+                insertPostContainer(id, title, content, grade);
             }
             
         },
@@ -171,7 +65,8 @@ function getById(){
 }
 
 
-function insertPostContainer(id, user, post) {
+
+function insertPostContainer(id, user, post, grade) {
     const postContainer = document.createElement('div');
     postContainer.classList.add('post-container');
     
@@ -180,21 +75,19 @@ function insertPostContainer(id, user, post) {
     
     const postText = document.createElement('p');
     postText.textContent = post;
+
+    const likes = document.createElement('p');
+    likes.textContent = "Likes: "+grade;
     
     const likeButton = document.createElement('button');
     likeButton.textContent = 'Like';
     likeButton.classList.add('btn');
     likeButton.setAttribute('onclick', `like(${id})`);
-
-    const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Delete';
-    deleteButton.classList.add('btn');
-    deleteButton.setAttribute('onclick', `deleteReview(${id})`);
     
     postContainer.appendChild(userHeader);
     postContainer.appendChild(postText);
+    postContainer.appendChild(likes);
     postContainer.appendChild(likeButton);
-    postContainer.appendChild(deleteButton);
     
     const page = document.querySelector('.page');
     page.appendChild(postContainer);

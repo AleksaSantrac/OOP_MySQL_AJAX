@@ -14,7 +14,6 @@
         }
 
         $userID = $_COOKIE['user_id'];
-        // $userID = 1;
 
         $res = review::getByUserId($userID, $conn);
 
@@ -26,11 +25,9 @@
             $content = $data['content'];
             $grade = $data['grade'];
             $results[] = array('id' => $id, 'title' => $title, 'content' => $content, 'grade' => $grade);
-            // $results[] = array('id' => $userID);
         }
 
         echo json_encode($results);
-        // echo $userID;
 
         
     } catch(Exception $e){
