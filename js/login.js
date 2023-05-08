@@ -18,7 +18,7 @@ function login() {
                 const json = response;
                 const obj = JSON.parse(json);
                 const id = obj.id;
-                location.href="friend-wall.html";
+                location.href="reviews.html";
             }
         },
         error: function(xhr){
